@@ -1,3 +1,5 @@
+'use client';
+
 import { initializeApp } from 'firebase/app';
 import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
 
@@ -10,16 +12,13 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-// Get Auth instance
-export const auth = getAuth(app);
-
-// Set persistence to LOCAL
+// Set auth persistence
 setPersistence(auth, browserLocalPersistence)
   .catch((error) => {
-    console.error('Error setting auth persistence:', error);
+    console.error('Auth persistence error:', error);
   });
 
-export default app;
+export { auth };
