@@ -2,34 +2,58 @@
 'use client';
 
 import React from 'react';
-import { Menu } from 'lucide-react';
 import { User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import { Bell, User as UserIcon } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 interface HeaderProps {
-  toggleSidebar: () => void;
   user: User;
+  toggleSidebar: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleSidebar, user }) => {
+const Header: React.FC<HeaderProps> = ({ user }) => {
+  const pathname = usePathname();
+  
+  // Get the current page title based on the pathname
+  const getPageTitle = () => {
+    const path = pathname.split('/').pop();
+    if (!path || path === 'dashboard') return 'Dashboard';
+    return path.charAt(0).toUpperCase() + path.slice(1);
+  };
+
   return (
     <header className="bg-white shadow-sm">
       <div className="flex items-center justify-between px-8 py-4">
-        <div className="flex items-center">
-          <Menu
-            className="mr-4 cursor-pointer"
-            onClick={toggleSidebar}
-          />
-          <h1 className="text-2xl font-semibold text-gray-800">Welcome Back</h1>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-gray-600">{user.email}</span>
-          <button
-            onClick={() => auth.signOut()}
-            className="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
-          >
-            Sign Out
+        <h1 className="text-2xl font-semibold text-gray-800">
+          {getPageTitle()}
+        </h1>
+
+        <div className="flex items-center space-x-4">
+          {/* Notifications */}
+          <button className="p-2 text-gray-400 hover:text-gray-500">
+            <Bell size={20} />
           </button>
+
+          {/* User Menu */}
+          <div className="relative">
+            <div className="flex items-center space-x-3">
+              <div className="flex flex-col text-right">
+                <span className="text-sm font-medium text-gray-700">
+                  {user.email}
+                </span>
+                <button
+                  onClick={() => auth.signOut()}
+                  className="text-sm text-gray-500 hover:text-gray-700"
+                >
+                  Sign out
+                </button>
+              </div>
+              <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                <UserIcon size={20} className="text-gray-500" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </header>

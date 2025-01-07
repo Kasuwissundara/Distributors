@@ -1,8 +1,8 @@
-// src/lib/firebase.ts
 'use client';
 
 import { initializeApp } from 'firebase/app';
 import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,6 +15,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 // Set auth persistence
 setPersistence(auth, browserLocalPersistence)
@@ -22,4 +23,4 @@ setPersistence(auth, browserLocalPersistence)
     console.error('Auth persistence error:', error);
   });
 
-export { auth };
+export { auth, db };
