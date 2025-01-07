@@ -6,12 +6,13 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import CustomerTable from '@/components/customers/CustomerTable';
 import CustomerModal from '@/components/customers/CustomerModal';
+import type { Customer } from '@/app/types/customer';
 
 export default function CustomersPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingCustomer, setEditingCustomer] = useState(null);
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
 
   if (loading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
@@ -27,7 +28,7 @@ export default function CustomersPage() {
     setIsModalOpen(true);
   };
 
-  const handleEdit = (customer) => {
+  const handleEdit = (customer: Customer) => {
     setEditingCustomer(customer);
     setIsModalOpen(true);
   };
@@ -50,11 +51,13 @@ export default function CustomersPage() {
         <CustomerTable onEdit={handleEdit} />
       </div>
 
-      <CustomerModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        customer={editingCustomer}
-      />
+      {isModalOpen && (
+        <CustomerModal 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          customer={editingCustomer}
+        />
+      )}
     </DashboardLayout>
   );
 }
